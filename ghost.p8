@@ -5,15 +5,18 @@ __lua__
 
 function _init()
 	init_player()
+	init_lights()
 end
 
 function _update()
 	update_player()
+	update_lights()
 end
 
 function _draw()
 	cls()
 	draw_player()
+	draw_lights()
 end
 
 -->8
@@ -60,6 +63,88 @@ end
 
 -->8
 --lights
+
+function init_lights()
+	lights = {}
+	max_lights = 10
+	max_size = 8
+	color = 10
+	speed = 0.6
+end
+
+function create_light()
+	local x, y, dx, dy = 0, 0, 0, 0
+	local spawn = flr(rnd(4))
+
+	if spawn < 2 then
+		y = flr(rnd(128))
+		dy = rnd(speed * 2) - speed
+
+		if spawn == 0 then
+			--left
+			x = -8
+			dx = rnd(speed)
+		else
+			--right
+			x = 135
+			dx = -rnd(speed)
+		end
+	else
+		x = flr(rnd(128))
+		dx = rnd(speed * 2) - speed
+
+		if spawn == 2 then
+			--top
+			y = -8
+			dy = rnd(speed)
+		else
+			--bottom
+			y = 135
+			dy = -rnd(speed)
+		end
+	end
+
+	local light = {
+		x = x,
+		y = y,
+		dx = dx,
+		dy = dy,
+		r = ceil(rnd(max_size))
+	}
+
+	add(lights, light)
+end
+
+function update_lights()
+	if #lights < max_lights then
+		create_light()
+	end
+
+	for light in all(lights) do
+		--movement
+		light.x += light.dx
+		light.y += light.dy
+
+		--outside screen
+		if light.x < -8
+				or light.x > 135
+				or light.y < -8
+				or light.y > 135 then
+			del(lights, light)
+		end
+	end
+end
+
+function draw_lights()
+	for light in all(lights) do
+		circfill(
+			light.x,
+			light.y,
+			light.r,
+			color
+		)
+	end
+end
 
 __gfx__
 00000000007777000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
