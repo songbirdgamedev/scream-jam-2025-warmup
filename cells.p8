@@ -102,6 +102,17 @@ function _draw()
 		circfill(enemy.x, enemy.y, enemy.r, enemy.c)
 		circ(enemy.x, enemy.y, enemy.r + 1, enemy.c2)
 	end
+
+	--score
+	print("●=" .. player.eat, 0, 5, 7)
+
+	--win
+	if player.eat >= win_amount then
+		rectfill(0, 55, 127, 75, 0)
+		print("congratulations!!!", 28, 56, 7)
+		print("you became", 43, 63, 7)
+		print("a multicelled organism", 20, 70, 7)
+	end
 end
 
 -->8
