@@ -24,6 +24,34 @@ function _init()
 	win_amount = 500
 end
 
+function _update()
+	--player controls
+	if btn(⬅️) then
+		player.dx -= player.speed
+	end
+	if btn(➡️) then
+		player.dx += player.speed
+	end
+	if btn(⬆️) then
+		player.dy -= player.speed
+	end
+	if btn(⬇️) then
+		player.dy += player.speed
+	end
+
+	--player movement
+	player.x += player.dx
+	player.y += player.dy
+end
+
+function _draw()
+	cls()
+
+	--player
+	circfill(player.x, player.y, player.r, player.c)
+	circ(player.x, player.y, player.r + 1, player.c2)
+end
+
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
