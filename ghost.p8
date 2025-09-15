@@ -15,8 +15,8 @@ end
 
 function _draw()
 	cls()
-	draw_player()
 	draw_lights()
+	draw_player()
 end
 
 -->8
@@ -47,6 +47,17 @@ function update_player()
 	end
 	if btn(⬇️) then
 		player.y += 1
+	end
+
+	--check boundary
+	if player.x < 0 then
+		player.x = 0
+	elseif player.x > 120 then
+		player.x = 120
+	elseif player.y < 0 then
+		player.y = 0
+	elseif player.y > 120 then
+		player.y = 120
 	end
 end
 
@@ -82,12 +93,10 @@ function create_light()
 
 		if spawn == 0 then
 			--left
-			x = -8
-			dx = rnd(speed)
+			x, dx = -8, rnd(speed)
 		else
 			--right
-			x = 135
-			dx = -rnd(speed)
+			x, dx = 135, -rnd(speed)
 		end
 	else
 		x = flr(rnd(128))
@@ -95,12 +104,10 @@ function create_light()
 
 		if spawn == 2 then
 			--top
-			y = -8
-			dy = rnd(speed)
+			y, dy = -8, rnd(speed)
 		else
 			--bottom
-			y = 135
-			dy = -rnd(speed)
+			y, dy = 135, -rnd(speed)
 		end
 	end
 
