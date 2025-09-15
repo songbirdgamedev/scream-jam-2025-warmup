@@ -74,6 +74,19 @@ function _update()
 		end
 
 		--collide with player
+		if circ_collide(
+			player.x, player.y, player.r,
+			enemy.x, enemy.y, enemy.r
+		) then
+			--compare size
+			if flr(player.r) > enemy.r then
+				player.eat += 1
+				player.r += .2
+				del(enemies, enemy)
+			else
+				_init()
+			end
+		end
 	end
 end
 
@@ -172,6 +185,16 @@ function create_enemies()
 		--add it to enemies table
 		add(enemies, enemy)
 	end
+end
+
+-->8
+--collision
+
+function circ_collide(x1, y1, r1, x2, y2, r2)
+	dist_sq = (x1 - x2) ^ 2 + (y1 - y2) ^ 2
+	rsum_sq = (r1 + r2) ^ 2
+
+	return dist_sq < rsum_sq
 end
 
 __gfx__
