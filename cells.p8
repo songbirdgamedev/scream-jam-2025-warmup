@@ -4,6 +4,38 @@ __lua__
 --cells
 
 function _init()
+	init_player()
+	init_enemies()
+	win_amount = 500
+end
+
+function _update()
+	update_player()
+	update_enemies()
+end
+
+function _draw()
+	cls()
+
+	draw_player()
+	draw_enemies()
+
+	--score
+	print("●=" .. player.eat, 0, 5, 7)
+
+	--win
+	if player.eat >= win_amount then
+		rectfill(0, 55, 127, 75, 0)
+		print("congratulations!!!", 28, 56, 7)
+		print("you became", 43, 63, 7)
+		print("a multicelled organism", 20, 70, 7)
+	end
+end
+
+-->8
+--player
+
+function init_player()
 	player = {
 		x = 60,
 		y = 60,
@@ -15,17 +47,10 @@ function _init()
 		speed = 0.08,
 		eat = 0
 	}
-
-	--game settings
-	enemies = {}
-	max_enemies = 15
-	max_enemy_size = 10
-	enemy_speed = 0.6
-	win_amount = 500
 end
 
-function _update()
-	--player controls
+function update_player()
+	--controls
 	if btn(⬅️) then
 		player.dx -= player.speed
 	end
@@ -39,7 +64,7 @@ function _update()
 		player.dy += player.speed
 	end
 
-	--player movement
+	--movement
 	player.x += player.dx
 	player.y += player.dy
 
@@ -56,9 +81,37 @@ function _update()
 	if player.y < 0 then
 		player.y = 126
 	end
+end
 
-	--enemy update
-	create_enemies()
+function draw_player()
+	circfill(
+		player.x,
+		player.y,
+		player.r,
+		player.c
+	)
+	circ(
+		player.x,
+		player.y,
+		player.r + 1,
+		player.c2
+	)
+end
+
+-->8
+--enemies
+
+function init_enemies()
+	enemies = {}
+	max_enemies = 15
+	max_enemy_size = 10
+	enemy_speed = 0.6
+end
+
+function update_enemies()
+	if #enemies < max_enemies then
+		create_enemies()
+	end
 
 	for enemy in all(enemies) do
 		--movement
@@ -73,145 +126,125 @@ function _update()
 			del(enemies, enemy)
 		end
 
-		--collide with player
-		if circ_collide(
-			player.x, player.y, player.r,
-			enemy.x, enemy.y, enemy.r
-		) then
-			--compare size
-			if flr(player.r) > enemy.r then
-				player.eat += 1
-				player.r += .2
-				del(enemies, enemy)
-			else
-				_init()
-			end
-		end
+		check_collision(enemy)
 	end
 end
-
-function _draw()
-	cls()
-
-	--player
-	circfill(player.x, player.y, player.r, player.c)
-	circ(player.x, player.y, player.r + 1, player.c2)
-
-	--enemies
-	for enemy in all(enemies) do
-		circfill(enemy.x, enemy.y, enemy.r, enemy.c)
-		circ(enemy.x, enemy.y, enemy.r + 1, enemy.c2)
-	end
-
-	--score
-	print("●=" .. player.eat, 0, 5, 7)
-
-	--win
-	if player.eat >= win_amount then
-		rectfill(0, 55, 127, 75, 0)
-		print("congratulations!!!", 28, 56, 7)
-		print("you became", 43, 63, 7)
-		print("a multicelled organism", 20, 70, 7)
-	end
-end
-
--->8
---enemies
 
 function create_enemies()
-	if #enemies < max_enemies then
-		--local variables
-		local x, y = 0, 0
-		local dx, dy = 0, 0
-		local r = flr(rnd((max_enemy_size + player.r) / 2)) + 1
-		local c, c2 = 0, 0
+	--local variables
+	local x, y = 0, 0
+	local dx, dy = 0, 0
+	local r = flr(rnd((max_enemy_size + player.r) / 2)) + 1
+	local c, c2 = 0, 0
 
-		--random start position
-		place = flr(rnd(4))
+	--random start position
+	place = flr(rnd(4))
 
-		if place < 2 then
-			y = flr(rnd(128))
-			dy = rnd(enemy_speed * 2) - enemy_speed
+	if place < 2 then
+		y = flr(rnd(128))
+		dy = rnd(enemy_speed * 2) - enemy_speed
 
-			if place == 0 then
-				--left
-				x = flr(rnd(8) - 16)
-				dx = rnd(enemy_speed)
-			else
-				--right
-				x = flr(rnd(8) + 128)
-				dx = -rnd(enemy_speed)
-			end
+		if place == 0 then
+			--left
+			x = flr(rnd(8) - 16)
+			dx = rnd(enemy_speed)
 		else
-			x = flr(rnd(128))
-			dx = rnd(enemy_speed * 2) - enemy_speed
-
-			if place == 2 then
-				--top
-				y = flr(rnd(8) - 16)
-				dy = rnd(enemy_speed)
-			else
-				--bottom
-				y = flr(rnd(8) + 128)
-				dy = -rnd(enemy_speed)
-			end
+			--right
+			x = flr(rnd(8) + 128)
+			dx = -rnd(enemy_speed)
 		end
+	else
+		x = flr(rnd(128))
+		dx = rnd(enemy_speed * 2) - enemy_speed
 
-		--size determines color
-		if r == 1 then
-			c, c2 = 10, 9
-		elseif r == 2 then
-			c, c2 = 6, 7
-		elseif r == 3 then
-			c, c2 = 9, 4
-		elseif r == 4 then
-			c, c2 = 14, 4
-		elseif r == 5 then
-			c, c2 = 2, 1
-		elseif r == 6 then
-			c, c2 = 8, 2
-		elseif r == 7 then
-			c, c2 = 7, 6
-		elseif r == 8 then
-			c, c2 = 12, 1
-		elseif r == 9 then
-			c, c2 = 1, 12
-		elseif r == 10 then
-			c, c2 = 3, 11
+		if place == 2 then
+			--top
+			y = flr(rnd(8) - 16)
+			dy = rnd(enemy_speed)
 		else
-			c, c2 = 8, 12
+			--bottom
+			y = flr(rnd(8) + 128)
+			dy = -rnd(enemy_speed)
 		end
+	end
 
-		--make enemy table
-		local enemy = {
-			x = x,
-			y = y,
-			dx = dx,
-			dy = dy,
-			r = r,
-			c = c,
-			c2 = c2
-		}
+	--size determines color
+	if r == 1 then
+		c, c2 = 10, 9
+	elseif r == 2 then
+		c, c2 = 6, 7
+	elseif r == 3 then
+		c, c2 = 9, 4
+	elseif r == 4 then
+		c, c2 = 14, 4
+	elseif r == 5 then
+		c, c2 = 2, 1
+	elseif r == 6 then
+		c, c2 = 8, 2
+	elseif r == 7 then
+		c, c2 = 7, 6
+	elseif r == 8 then
+		c, c2 = 12, 1
+	elseif r == 9 then
+		c, c2 = 1, 12
+	elseif r == 10 then
+		c, c2 = 3, 11
+	else
+		c, c2 = 8, 12
+	end
 
-		--add it to enemies table
-		add(enemies, enemy)
+	--make enemy table
+	local enemy = {
+		x = x,
+		y = y,
+		dx = dx,
+		dy = dy,
+		r = r,
+		c = c,
+		c2 = c2
+	}
+
+	--add it to enemies table
+	add(enemies, enemy)
+end
+
+function draw_enemies()
+	for enemy in all(enemies) do
+		circfill(
+			enemy.x,
+			enemy.y,
+			enemy.r,
+			enemy.c
+		)
+		circ(
+			enemy.x,
+			enemy.y,
+			enemy.r + 1,
+			enemy.c2
+		)
 	end
 end
 
 -->8
---collision
+--logic
 
-function circ_collide(x1, y1, r1, x2, y2, r2)
-	dist_sq = (x1 - x2) ^ 2 + (y1 - y2) ^ 2
-	rsum_sq = (r1 + r2) ^ 2
+function check_collision(enemy)
+	diff_x = player.x - enemy.x
+	diff_y = player.y - enemy.y
+	dist_sq = diff_x ^ 2 + diff_y ^ 2
+	rsum_sq = (player.r + enemy.r) ^ 2
 
-	return dist_sq < rsum_sq
+	if dist_sq < rsum_sq then
+		compare_size(enemy)
+	end
 end
 
-__gfx__
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+function compare_size(enemy)
+	if flr(player.r) > enemy.r then
+		player.eat += 1
+		player.r += .2
+		del(enemies, enemy)
+	else
+		_init()
+	end
+end
