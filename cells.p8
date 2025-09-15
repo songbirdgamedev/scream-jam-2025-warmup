@@ -42,6 +42,20 @@ function _update()
 	--player movement
 	player.x += player.dx
 	player.y += player.dy
+
+	--flip sides
+	if player.x > 127 then
+		player.x = 1
+	end
+	if player.x < 0 then
+		player.x = 126
+	end
+	if player.y > 127 then
+		player.y = 1
+	end
+	if player.y < 0 then
+		player.y = 126
+	end
 end
 
 function _draw()
