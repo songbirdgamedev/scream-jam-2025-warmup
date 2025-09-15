@@ -39,11 +39,10 @@ function init_player()
 	player = {
 		x = 60,
 		y = 60,
-		c = 11, --inside color
-		c2 = 3, --outside color
-		r = 2,
 		dx = 0,
 		dy = 0,
+		c = 11,
+		r = 2,
 		speed = 0.08,
 		eat = 0
 	}
@@ -90,12 +89,6 @@ function draw_player()
 		player.r,
 		player.c
 	)
-	circ(
-		player.x,
-		player.y,
-		player.r + 1,
-		player.c2
-	)
 end
 
 -->8
@@ -132,10 +125,8 @@ end
 
 function create_enemies()
 	--local variables
-	local x, y = 0, 0
-	local dx, dy = 0, 0
+	local x, y, dx, dy, c = 0, 0, 0, 0, 0
 	local r = flr(rnd((max_enemy_size + player.r) / 2)) + 1
-	local c, c2 = 0, 0
 
 	--random start position
 	place = flr(rnd(4))
@@ -170,27 +161,27 @@ function create_enemies()
 
 	--size determines color
 	if r == 1 then
-		c, c2 = 10, 9
+		c = 10
 	elseif r == 2 then
-		c, c2 = 6, 7
+		c = 6
 	elseif r == 3 then
-		c, c2 = 9, 4
+		c = 9
 	elseif r == 4 then
-		c, c2 = 14, 4
+		c = 14
 	elseif r == 5 then
-		c, c2 = 2, 1
+		c = 2
 	elseif r == 6 then
-		c, c2 = 8, 2
+		c = 8
 	elseif r == 7 then
-		c, c2 = 7, 6
+		c = 7
 	elseif r == 8 then
-		c, c2 = 12, 1
+		c = 12
 	elseif r == 9 then
-		c, c2 = 1, 12
+		c = 1
 	elseif r == 10 then
-		c, c2 = 3, 11
+		c = 3
 	else
-		c, c2 = 8, 12
+		c = 8
 	end
 
 	--make enemy table
@@ -200,8 +191,7 @@ function create_enemies()
 		dx = dx,
 		dy = dy,
 		r = r,
-		c = c,
-		c2 = c2
+		c = c
 	}
 
 	--add it to enemies table
@@ -215,12 +205,6 @@ function draw_enemies()
 			enemy.y,
 			enemy.r,
 			enemy.c
-		)
-		circ(
-			enemy.x,
-			enemy.y,
-			enemy.r + 1,
-			enemy.c2
 		)
 	end
 end
