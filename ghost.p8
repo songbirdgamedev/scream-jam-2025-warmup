@@ -26,6 +26,7 @@ function init_player()
 	player = {
 		x = 60,
 		y = 60,
+		r = 4,
 		sprite = 1,
 		size = 1,
 		flip = false
@@ -139,6 +140,8 @@ function update_lights()
 				or light.y > 135 then
 			del(lights, light)
 		end
+
+		check_collision(light)
 	end
 end
 
@@ -150,6 +153,21 @@ function draw_lights()
 			light.r,
 			color
 		)
+	end
+end
+
+-->8
+--collision
+
+function check_collision(light)
+	local x = player.x + player.r
+	local y = player.y + player.r
+	diff_x = (x - light.x) ^ 2
+	diff_y = (y - light.y) ^ 2
+	dist_sq = diff_x + diff_y
+
+	if dist_sq < light.r ^ 2 then
+		_init()
 	end
 end
 
