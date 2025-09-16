@@ -4,19 +4,64 @@ __lua__
 --ghost game
 
 function _init()
+	init_title()
 	init_player()
 	init_lights()
 end
 
 function _update()
-	update_player()
-	update_lights()
+	if title then
+		update_title()
+	else
+		update_player()
+		update_lights()
+	end
 end
 
 function _draw()
 	cls()
-	draw_lights()
-	draw_player()
+	if title then
+		draw_title()
+	else
+		draw_lights()
+		draw_player()
+	end
+end
+
+-->8
+--title
+
+function init_title()
+	title = true
+	logo = {
+		sprite = 72,
+		x = 32,
+		y = 32,
+		w = 8,
+		h = 4
+	}
+end
+
+function update_title()
+	if btn(❎) then
+		title = false
+	end
+end
+
+function draw_title()
+	spr(
+		logo.sprite,
+		logo.x,
+		logo.y,
+		logo.w,
+		logo.h
+	)
+	print(
+		"- press ❎ to start -",
+		24,
+		80,
+		6
+	)
 end
 
 -->8
