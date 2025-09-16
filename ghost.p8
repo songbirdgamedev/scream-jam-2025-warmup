@@ -212,16 +212,18 @@ end
 
 function init_lights()
 	lights = {}
-	max_lights = 10
-	max_size = 8
+	max_lights = 24
+	max_size = 12
+	min_size = 4
 	color = 10
-	speed = 0.6
+	speed = 1
 	final_speed = 0.1
 	collided = false
 end
 
 function create_light()
-	local x, y, dx, dy = 0, 0, 0, 0
+	local x, y = 0, 0
+	local dx, dy = 0, 0
 	local spawn = flr(rnd(4))
 
 	if spawn < 2 then
@@ -230,10 +232,12 @@ function create_light()
 
 		if spawn == 0 then
 			--left
-			x, dx = -8, rnd(speed)
+			x = -max_size
+			dx = rnd(speed)
 		else
 			--right
-			x, dx = 135, -rnd(speed)
+			x = max_size + 127
+			dx = -rnd(speed)
 		end
 	else
 		x = flr(rnd(128))
@@ -241,10 +245,12 @@ function create_light()
 
 		if spawn == 2 then
 			--top
-			y, dy = -8, rnd(speed)
+			y = -max_size
+			dy = rnd(speed)
 		else
 			--bottom
-			y, dy = 135, -rnd(speed)
+			y = max_size + 127
+			dy = -rnd(speed)
 		end
 	end
 
@@ -253,7 +259,7 @@ function create_light()
 		y = y,
 		dx = dx,
 		dy = dy,
-		r = ceil(rnd(max_size))
+		r = flr(rnd(max_size)) + min_size
 	}
 
 	add(lights, light)
@@ -270,10 +276,10 @@ function update_lights()
 		light.y += light.dy
 
 		--outside screen
-		if light.x < -8
-				or light.x > 135
-				or light.y < -8
-				or light.y > 135 then
+		if light.x > max_size + 127
+				or light.x < -max_size
+				or light.y > max_size + 127
+				or light.y < -max_size then
 			del(lights, light)
 		end
 
