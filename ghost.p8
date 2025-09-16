@@ -7,11 +7,14 @@ function _init()
 	init_title()
 	init_player()
 	init_lights()
+	init_end()
 end
 
 function _update()
 	if title then
 		update_title()
+	elseif gameover then
+		update_end()
 	else
 		update_player()
 		update_lights()
@@ -22,6 +25,8 @@ function _draw()
 	cls()
 	if title then
 		draw_title()
+	elseif gameover then
+		draw_end()
 	else
 		draw_lights()
 		draw_player()
@@ -43,7 +48,7 @@ function init_title()
 end
 
 function update_title()
-	if btn(❎) then
+	if btnp(❎) then
 		title = false
 	end
 end
@@ -212,8 +217,44 @@ function check_collision(light)
 	dist_sq = diff_x + diff_y
 
 	if dist_sq < light.r ^ 2 then
+		gameover = true
+	end
+end
+
+-->8
+--end
+
+function init_end()
+	gameover = false
+	msg = {
+		sprite = 136,
+		x = 32,
+		y = 32,
+		w = 8,
+		h = 4
+	}
+end
+
+function update_end()
+	if btnp(❎) then
 		_init()
 	end
+end
+
+function draw_end()
+	spr(
+		msg.sprite,
+		msg.x,
+		msg.y,
+		msg.w,
+		msg.h
+	)
+	print(
+		"- press ❎ to restart -",
+		20,
+		80,
+		6
+	)
 end
 
 __gfx__
