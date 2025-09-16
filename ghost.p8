@@ -77,6 +77,8 @@ function init_player()
 		x = 60,
 		y = 60,
 		r = 4,
+		tick = 0,
+		rate = 0.25,
 		sprite = 1,
 		size = 1,
 		flip = false
@@ -88,16 +90,20 @@ function update_player()
 	if btn(⬅️) then
 		player.x -= 1
 		player.flip = false
+		animate_sprite()
 	end
 	if btn(➡️) then
 		player.x += 1
 		player.flip = true
+		animate_sprite()
 	end
 	if btn(⬆️) then
 		player.y -= 1
+		animate_sprite()
 	end
 	if btn(⬇️) then
 		player.y += 1
+		animate_sprite()
 	end
 
 	--check boundary
@@ -109,6 +115,18 @@ function update_player()
 		player.y = 0
 	elseif player.y > 120 then
 		player.y = 120
+	end
+end
+
+function animate_sprite()
+	player.tick += player.rate
+	if player.tick >= 1 then
+		player.tick = 0
+		if player.sprite == 1 then
+			player.sprite = 2
+		else
+			player.sprite = 1
+		end
 	end
 end
 
