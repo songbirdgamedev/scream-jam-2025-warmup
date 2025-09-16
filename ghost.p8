@@ -70,8 +70,14 @@ function draw_title()
 		logo.h
 	)
 	print(
+		"avoid the lights",
+		32,
+		70,
+		6
+	)
+	print(
 		"- press ❎ to start -",
-		24,
+		22,
 		80,
 		6
 	)
@@ -107,13 +113,13 @@ function draw_end()
 	)
 	print(
 		"final score: " .. score,
-		36,
+		35,
 		70,
 		6
 	)
 	print(
 		"- press ❎ to restart -",
-		20,
+		18,
 		80,
 		6
 	)
@@ -213,8 +219,8 @@ end
 function init_lights()
 	lights = {}
 	max_lights = 24
-	max_size = 12
-	min_size = 4
+	max_size = 10
+	min_size = 7
 	color = 10
 	speed = 1
 	final_speed = 0.1
