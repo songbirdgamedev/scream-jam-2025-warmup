@@ -15,6 +15,8 @@ function _update()
 		update_title()
 	elseif gameover then
 		update_end()
+	elseif collided then
+		update_collision()
 	else
 		update_player()
 		update_lights()
@@ -27,6 +29,10 @@ function _draw()
 		draw_title()
 	elseif gameover then
 		draw_end()
+	elseif collided then
+		draw_lights()
+		draw_collision()
+		draw_player()
 	else
 		draw_lights()
 		draw_player()
@@ -150,6 +156,8 @@ function init_lights()
 	max_size = 8
 	color = 10
 	speed = 0.6
+	final_speed = 0.1
+	collided = false
 end
 
 function create_light()
@@ -230,13 +238,46 @@ end
 function check_collision(light)
 	local x = player.x + player.r
 	local y = player.y + player.r
-	diff_x = (x - light.x) ^ 2
-	diff_y = (y - light.y) ^ 2
-	dist_sq = diff_x + diff_y
+	local dx = x - light.x
+	local dy = y - light.y
+	dist_sq = dx ^ 2 + dy ^ 2
 
 	if dist_sq < light.r ^ 2 then
+		collided = true
+		light.dx = dx * final_speed
+		light.dy = dy * final_speed
+		del(lights, light)
+		init_collision(light, x, y)
+	end
+end
+
+function init_collision(light, x, y)
+	collider = light
+	target = {
+		x = x,
+		y = y
+	}
+	tick = 0
+end
+
+function update_collision()
+	--movement
+	if tick <= 1 then
+		collider.x += collider.dx
+		collider.y += collider.dy
+		tick += final_speed
+	else
 		gameover = true
 	end
+end
+
+function draw_collision()
+	circfill(
+		collider.x,
+		collider.y,
+		collider.r,
+		color
+	)
 end
 
 -->8
