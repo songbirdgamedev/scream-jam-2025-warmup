@@ -20,6 +20,7 @@ function _update()
 	else
 		update_player()
 		update_lights()
+		update_score()
 	end
 end
 
@@ -29,13 +30,13 @@ function _draw()
 		draw_title()
 	elseif gameover then
 		draw_end()
-	elseif collided then
-		draw_lights()
-		draw_collision()
-		draw_player()
 	else
+		if collided then
+			draw_collision()
+		end
 		draw_lights()
 		draw_player()
+		draw_score()
 	end
 end
 
@@ -56,6 +57,7 @@ end
 function update_title()
 	if btnp(❎) then
 		title = false
+		init_score()
 	end
 end
 
@@ -73,6 +75,64 @@ function draw_title()
 		80,
 		6
 	)
+end
+
+-->8
+--end
+
+function init_end()
+	gameover = false
+	msg = {
+		sprite = 136,
+		x = 32,
+		y = 32,
+		w = 8,
+		h = 4
+	}
+end
+
+function update_end()
+	if btnp(❎) then
+		_init()
+	end
+end
+
+function draw_end()
+	spr(
+		msg.sprite,
+		msg.x,
+		msg.y,
+		msg.w,
+		msg.h
+	)
+	print(
+		"final score: " .. score,
+		36,
+		70,
+		6
+	)
+	print(
+		"- press ❎ to restart -",
+		20,
+		80,
+		6
+	)
+end
+
+-->8
+--score
+
+function init_score()
+	score = 0
+	start_time = time()
+end
+
+function update_score()
+	score = flr(time() - start_time)
+end
+
+function draw_score()
+	print("\^#" .. score, 1, 1, 7)
 end
 
 -->8
@@ -277,42 +337,6 @@ function draw_collision()
 		collider.y,
 		collider.r,
 		color
-	)
-end
-
--->8
---end
-
-function init_end()
-	gameover = false
-	msg = {
-		sprite = 136,
-		x = 32,
-		y = 32,
-		w = 8,
-		h = 4
-	}
-end
-
-function update_end()
-	if btnp(❎) then
-		_init()
-	end
-end
-
-function draw_end()
-	spr(
-		msg.sprite,
-		msg.x,
-		msg.y,
-		msg.w,
-		msg.h
-	)
-	print(
-		"- press ❎ to restart -",
-		20,
-		80,
-		6
 	)
 end
 
