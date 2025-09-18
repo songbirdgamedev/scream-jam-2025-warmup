@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
---ghost game
+--ghost hunted
 --by songbird
 
 function _init()
